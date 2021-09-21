@@ -1,0 +1,442 @@
+$primary-green: rgb(73, 197, 42);
+
+@mixin btn-border-drawing($color: #ccc, $hover: black, $width: 2px, $vertical: top, $horizontal: left, $duration: 0.25s) {
+  box-shadow: inset 0 0 0 $width $color;
+  color: $color;
+  transition: color $duration $duration/3;
+  position: relative;
+
+  &::before,
+  &::after {
+    border: 0 solid transparent;
+    box-sizing: border-box;
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    width: 0;
+    height: 0;
+
+    #{$vertical}: 0;
+    #{$horizontal}: 0;
+  }
+
+  &::before {
+    $h-side: if($horizontal == "left", "right", "left");
+
+    border-#{$vertical}-width: $width;
+    border-#{$h-side}-width: $width;
+  }
+
+  &::after {
+    $v-side: if($vertical == "top", "bottom", "top");
+
+    border-#{$v-side}-width: $width;
+    border-#{$horizontal}-width: $width;
+  }
+
+  &:hover {
+    color: $hover;
+
+    &::before,
+    &::after {
+      border-color: $hover;
+      transition: border-color 0s, width $duration, height $duration;
+      width: 100%;
+      height: 100%;
+    }
+
+    &::before {
+      transition-delay: 0s, 0s, $duration;
+    }
+
+    &::after {
+      transition-delay: 0s, $duration, 0s;
+    }
+  }
+}
+
+.draw-border {
+  @include btn-border-drawing(rgb(255, 255, 255), rgb(73, 197, 42), 4px, bottom, right);
+}
+
+//=== Button styling, semi-ignore
+.btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  line-height: 1.5;
+  font: 700 1.2rem;
+  padding: 1em 2em;
+  letter-spacing: 0.05rem;
+
+  &:focus {
+    outline: 1px dotted rgb(73, 197, 42);
+  }
+}
+
+.stats {
+  position: fixed;
+  top: 0;
+  left: 0;
+  cursor: pointer;
+  opacity: 0.9;
+  z-index: 10000;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  font-family: "Bebas Neue", cursive;
+}
+
+body,
+html {
+  overflow: hidden;
+}
+
+.webgl {
+  position: fixed;
+  top: 0;
+  left: 0;
+  outline: none;
+  width: 100vw;
+}
+
+.loader {
+  position: absolute;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  .load-percent {
+    color: rgb(73, 197, 42);
+    width: 30%;
+    font-weight: 100;
+  }
+  svg {
+    width: 30%;
+  }
+}
+
+.scroll-up {
+  height: 40px;
+  width: 40px;
+  display: block;
+  outline: 1px solid rgba(666, 666, 666, 0.08);
+  position: relative;
+  cursor: pointer;
+  transition: all 0.5s cubic-bezier(0.25, 1.7, 0.35, 1.5);
+  svg line {
+    stroke-width: 1;
+    stroke: #aaa;
+    fill: none;
+    stroke-dasharray: 20;
+    -webkit-transition: all 0.4s ease;
+    transition: all 0.4s ease;
+  }
+  &:hover svg line {
+    &.top {
+      -webkit-transform: translateX(-40px);
+      transform: translateX(-40px);
+    }
+    &.bottom {
+      -webkit-transform: translateX(40px);
+      transform: translateX(40px);
+    }
+    &.left {
+      -webkit-transform: translateY(40px);
+      transform: translateY(40px);
+    }
+    &.right {
+      -webkit-transform: translateY(-40px);
+      transform: translateY(-40px);
+    }
+  }
+}
+
+.scroll-up {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  .left-bar {
+    position: absolute;
+    z-index: 1;
+    background-color: transparent;
+    top: 19px;
+    left: 5px;
+    width: 18px;
+    display: block;
+    transform: rotate(-45deg);
+    &:after {
+      content: "";
+      background-color: #666;
+      width: 18px;
+      height: 1px;
+      display: block;
+      border-radius: 1px;
+      transition: all 0.5s cubic-bezier(0.25, 1.7, 0.35, 1.5);
+      transform-origin: right center;
+      z-index: -1;
+    }
+  }
+  .right-bar {
+    position: absolute;
+    background-color: transparent;
+    top: 19px;
+    left: 17px;
+    width: 18px;
+    display: block;
+    transform: rotate(45deg);
+    border-radius: 2px;
+    &:after {
+      content: "";
+      background-color: #666;
+      width: 18px;
+      height: 1px;
+      display: block;
+      border-radius: 1px;
+      transition: all 0.5s cubic-bezier(0.25, 1.7, 0.35, 1.5);
+      transform-origin: left center;
+      z-index: -1;
+    }
+  }
+  &:hover,
+  &:active,
+  &:focus {
+    transition: all 0.1s;
+    .left-bar:after {
+      transform: rotate(-10deg);
+    }
+    .right-bar:after {
+      transform: rotate(10deg);
+    }
+  }
+}
+
+.path1 {
+  stroke: rgb(73, 197, 42);
+  stroke-dasharray: 402;
+  stroke-dashoffset: 402;
+  fill: rgba(0, 0, 0, 0);
+}
+.path2 {
+  stroke: rgb(73, 197, 42);
+  stroke-dasharray: 1015;
+  stroke-dashoffset: 1015;
+  fill: rgba(0, 0, 0, 0);
+}
+.page-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+  position: relative;
+  height: 100vh;
+  scroll-snap-type: y proximity;
+  &::-webkit-scrollbar {
+    width: 10px;
+  }
+  &::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(73, 197, 42, 0.3);
+    border-radius: 15px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 50px;
+    background-color: rgba(73, 197, 42, 0.178);
+    -webkit-box-shadow: inset 0 0 6px rgba(73, 73, 73, 0.836);
+
+    &:hover {
+      background-color: rgba(73, 197, 42, 0.507);
+    }
+  }
+  .panel {
+    height: 100vh;
+    position: relative;
+    scroll-snap-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  nav {
+    background-color: transparent;
+    a {
+      text-decoration: none;
+      color: white;
+      font-size: 110%;
+      height: 100%;
+
+      .logo {
+        min-width: 120px;
+      }
+    }
+  }
+}
+
+.about,
+.projects,
+.contact {
+  text-align: center;
+  h1 {
+    font-size: 250%;
+    padding: 15px;
+    color: white;
+  }
+  .about-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 90%;
+    height: 85%;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.301);
+    backdrop-filter: blur(10px);
+    text-align: left;
+    border-radius: 15px;
+
+    .p-about {
+      height: 40%;
+      width: 90%;
+      p {
+        font-family: "Roboto", sans-serif;
+        font-size: 80%;
+      }
+    }
+    .skills {
+      display: flex;
+      justify-content: space-between;
+      width: 90%;
+      height: 40%;
+      div {
+        width: 40%;
+        h3 {
+          font-size: 95%;
+        }
+      }
+      ul li {
+        font-family: "Roboto", sans-serif;
+        font-size: 80%;
+      }
+      a {
+        color: $primary-green;
+        font-family: "Roboto", sans-serif;
+        font-size: 80%;
+      }
+    }
+  }
+}
+.about {
+  width: 100%;
+}
+.nav {
+  display: flex;
+  opacity: 0;
+  min-height: 100vh;
+
+  width: 100%;
+}
+#projects {
+  width: 100%;
+  .carousel {
+    height: 80%;
+    .carousel-item {
+      height: 400px;
+      width: 400px;
+    }
+  }
+
+  .modal {
+    top: 8%;
+    max-height: 80%;
+    overflow: visible;
+    background-color: rgb(49, 49, 49);
+    color: white;
+    .modal-content {
+      .modal-info {
+        display: flex;
+        justify-content: space-evenly;
+        text-align: left;
+        img {
+          width: 40%;
+        }
+        p {
+          width: 40%;
+        }
+      }
+      .btn {
+        margin: 1rem;
+        width: 20%;
+      }
+    }
+    .modal-footer {
+      background-color: rgb(32, 32, 32);
+      a {
+        color: white;
+      }
+    }
+  }
+}
+
+.contact {
+  width: 100%;
+
+  .form-container {
+    display: flex;
+    width: 90%;
+    height: 70%;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      height: 100%;
+      max-height: 687px;
+      width: 90%;
+      background-color: rgba(128, 128, 128, 0.438);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      padding: 15px;
+      margin: 20px;
+      input,
+      label,
+      button,
+      textarea {
+        padding: 20px;
+        font-family: "Roboto", sans-serif;
+        font-family: "Roboto Slab", serif;
+        font-size: 120%;
+      }
+      input,
+      textarea {
+        border: none;
+        border-radius: 15px;
+        background-color: rgba(48, 48, 48, 0.644);
+        color: white;
+        &::placeholder {
+          color: rgb(170, 170, 170);
+        }
+        &:focus {
+          outline: none;
+          border: 0.5px dotted rgb(73, 197, 42);
+        }
+      }
+      input {
+        height: 10%;
+        max-height: 20px;
+      }
+      textarea {
+        height: 30%;
+        max-height: 60px;
+        resize: none;
+      }
+      button {
+        margin-top: 15px;
+      }
+    }
+  }
+}

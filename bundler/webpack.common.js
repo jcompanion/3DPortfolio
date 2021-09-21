@@ -1,50 +1,44 @@
-const CopyWebpackPlugin = require('copy-webpack-plugin')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const MiniCSSExtractPlugin = require('mini-css-extract-plugin')
-const path = require('path')
+const CopyWebpackPlugin = require("copy-webpack-plugin")
+const HtmlWebpackPlugin = require("html-webpack-plugin")
+const MiniCSSExtractPlugin = require("mini-css-extract-plugin")
+const Dotenv = require("dotenv-webpack")
+const path = require("path")
 
 module.exports = {
-    entry: path.resolve(__dirname, '../src/script.js'),
-    output:
-    {
-        filename: 'bundle.[contenthash].js',
-        path: path.resolve(__dirname, '../dist')
-    },
-    devtool: 'source-map',
-    plugins:
-    [
-        new CopyWebpackPlugin({
-            patterns: [
-                { from: path.resolve(__dirname, '../static') }
-            ]
-        }),
-        new HtmlWebpackPlugin({
-            template: path.resolve(__dirname, '../src/index.html'),
-            minify: true
-        }),
-        new MiniCSSExtractPlugin()
-    ],
-    module:
-    {
-        rules:
-        [
-            // HTML
-            {
-                test: /\.(html)$/,
-                use: ['html-loader']
-            },
+  entry: path.resolve(__dirname, "../src/script.js"),
+  output: {
+    filename: "bundle.[contenthash].js",
+    path: path.resolve(__dirname, "../dist")
+  },
+  devtool: "source-map",
+  plugins: [
+    new CopyWebpackPlugin({
+      patterns: [{ from: path.resolve(__dirname, "../static") }]
+    }),
+    new HtmlWebpackPlugin({
+      template: path.resolve(__dirname, "../src/index.html"),
+      minify: true
+    }),
+    new MiniCSSExtractPlugin(),
+    new Dotenv()
+  ],
 
-            // JS
-            {
-                test: /\.js$/,
-                exclude: /node_modules/,
-                use:
-                [
-                    'babel-loader'
-                ]
-            },
+  module: {
+    rules: [
+      // HTML
+      {
+        test: /\.(html)$/,
+        use: ["html-loader"]
+      },
 
-          //SCSS
+      // JS
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: ["babel-loader"]
+      },
+
+      //SCSS
       {
         test: /\.(scss|css)$/,
         use: [
@@ -57,44 +51,39 @@ module.exports = {
         ]
       },
 
-            // Images
-            {
-                test: /\.(jpg|png|gif|svg)$/,
-                use:
-                [
-                    {
-                        loader: 'file-loader',
-                        options:
-                        {
-                            outputPath: 'assets/images/'
-                        }
-                    }
-                ]
-            },
-
-            // Fonts
-            {
-                test: /\.(ttf|eot|woff|woff2)$/,
-                use:
-                [
-                    {
-                        loader: 'file-loader',
-                        options:
-                        {
-                            outputPath: 'assets/fonts/'
-                        }
-                    }
-                ]
-            },
-
-            // Shaders
-            {
-                test: /\.(glsl|vs|fs|vert|frag)$/,
-                exclude: /node_modules/,
-                use: [
-                    'raw-loader'
-                ]
+      // Images
+      {
+        test: /\.(jpg|png|gif|svg)$/,
+        use: [
+          {
+            loader: "file-loader",
+            options: {
+              name: "[name].[ext]",
+              outputPath: "assets/images/"
             }
+          }
         ]
-    }
+      },
+
+      // Fonts
+      {
+        test: /\.(ttf|eot|woff|woff2)$/,
+        use: [
+          {
+            loader: "file-loader",
+            options: {
+              outputPath: "assets/fonts/"
+            }
+          }
+        ]
+      },
+
+      // Shaders
+      {
+        test: /\.(glsl|vs|fs|vert|frag)$/,
+        exclude: /node_modules/,
+        use: ["raw-loader"]
+      }
+    ]
+  }
 }
